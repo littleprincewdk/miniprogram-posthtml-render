@@ -1,14 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 
-const {it} = require('mocha');
-const {expect} = require('chai');
-const {describe} = require('mocha');
+const { it } = require('mocha');
+const { expect } = require('chai');
+const { describe } = require('mocha');
 
 const render = require('../lib');
 
 const tree = require('./templates/parser.js');
-const html = fs.readFileSync(path.resolve(__dirname, 'templates/render.html'), 'utf8');
+const html = fs.readFileSync(
+  path.resolve(__dirname, 'templates/render.html'),
+  'utf8'
+);
 
 describe('PostHTML Render', () => {
   it('{String}', () => {
@@ -25,24 +28,25 @@ describe('PostHTML Render', () => {
 
   describe('Tags', () => {
     it('Empty', () => {
-      expect(render({content: ['Test']})).to.eql('<div>Test</div>');
+      expect(render({ content: ['Test'] })).to.eql('<view>Test</view>');
     });
 
     it('{Boolean} (false) -> {String}', () => {
-      expect(render({tag: false, content: 'Test'})).to.eql('Test');
-      expect(render({tag: false, content: ['Test']})).to.eql('Test');
+      expect(render({ tag: false, content: 'Test' })).to.eql('Test');
+      expect(render({ tag: false, content: ['Test'] })).to.eql('Test');
     });
 
     it('{Boolean} (false) -> {Number}', () => {
-      expect(render({tag: false, content: 555})).to.eql('555');
-      expect(render({tag: false, content: [555]})).to.eql('555');
+      expect(render({ tag: false, content: 555 })).to.eql('555');
+      expect(render({ tag: false, content: [555] })).to.eql('555');
     });
   });
 
   describe('Attrs', () => {
     it('Empty', () => {
-      const fixture = {attrs: {alt: ''}};
-      const expected = '<div alt=""></div>';
+      const fixture = { attrs: { alt: '' } };
+      // const expected = '<view alt=""></view>';
+      const expected = '<view alt></view>';
 
       expect(render(fixture)).to.eql(expected);
     });
@@ -50,10 +54,10 @@ describe('PostHTML Render', () => {
     it('Single', () => {
       const fixture = {
         attrs: {
-          id: 'header'
-        }
+          id: 'header',
+        },
       };
-      const expected = '<div id="header"></div>';
+      const expected = '<view id="header"></view>';
 
       expect(render(fixture)).to.eql(expected);
     });
@@ -63,10 +67,11 @@ describe('PostHTML Render', () => {
         attrs: {
           id: 'header',
           style: 'color:red',
-          'data-id': 'header'
-        }
+          'data-id': 'header',
+        },
       };
-      const expected = '<div id="header" style="color:red" data-id="header"></div>';
+      const expected =
+        '<view id="header" style="color:red" data-id="header"></view>';
 
       expect(render(fixture)).to.eql(expected);
     });
@@ -74,10 +79,10 @@ describe('PostHTML Render', () => {
     it('{Boolean} (true)', () => {
       const fixture = {
         attrs: {
-          disabled: true
-        }
+          disabled: true,
+        },
       };
-      const expected = '<div disabled></div>';
+      const expected = '<view disabled></view>';
 
       expect(render(fixture)).to.eql(expected);
     });
@@ -85,10 +90,10 @@ describe('PostHTML Render', () => {
     it('{Boolean} (false)', () => {
       const fixture = {
         attrs: {
-          disabled: false
-        }
+          disabled: false,
+        },
       };
-      const expected = '<div></div>';
+      const expected = '<view></view>';
 
       expect(render(fixture)).to.eql(expected);
     });
@@ -96,10 +101,10 @@ describe('PostHTML Render', () => {
     it('{Number}', () => {
       const fixture = {
         attrs: {
-          val: 5
-        }
+          val: 5,
+        },
       };
-      const expected = '<div val="5"></div>';
+      const expected = '<view val="5"></view>';
 
       expect(render(fixture)).to.eql(expected);
     });
@@ -107,10 +112,10 @@ describe('PostHTML Render', () => {
     it('{String} (double quotes)', () => {
       const fixture = {
         attrs: {
-          onclick: 'alert("hello world")'
-        }
+          onclick: 'alert("hello world")',
+        },
       };
-      const expected = '<div onclick="alert(&quot;hello world&quot;)"></div>';
+      const expected = '<view onclick="alert(&quot;hello world&quot;)"></view>';
 
       expect(render(fixture)).to.eql(expected);
     });
@@ -118,39 +123,33 @@ describe('PostHTML Render', () => {
 
   describe('Content', () => {
     it('{String}', () => {
-      const fixture = {content: 'Hello world!'};
-      const expected = '<div>Hello world!</div>';
+      const fixture = { content: 'Hello world!' };
+      const expected = '<view>Hello world!</view>';
 
       expect(render(fixture)).to.eql(expected);
     });
 
     it('{Array<String>}', () => {
-      const fixture = {content: ['Hello world!']};
-      const expected = '<div>Hello world!</div>';
+      const fixture = { content: ['Hello world!'] };
+      const expected = '<view>Hello world!</view>';
 
       expect(render(fixture)).to.eql(expected);
     });
 
     it('{Number}', () => {
-      expect(render({content: 555})).to.eql('<div>555</div>');
-      expect(render({content: [555]})).to.eql('<div>555</div>');
+      expect(render({ content: 555 })).to.eql('<view>555</view>');
+      expect(render({ content: [555] })).to.eql('<view>555</view>');
     });
 
     it('{Array<Number>}', () => {
-      expect(render({content: [555]})).to.eql('<div>555</div>');
+      expect(render({ content: [555] })).to.eql('<view>555</view>');
     });
 
     it('{Array}', () => {
       const fixture = {
-        content: [
-          [
-            555,
-            {tag: 'div', content: 666},
-            777
-          ]
-        ]
+        content: [[555, { tag: 'view', content: 666 }, 777]],
       };
-      const expected = '<div>555<div>666</div>777</div>';
+      const expected = '<view>555<view>666</view>777</view>';
 
       expect(render(fixture)).to.eql(expected);
     });
@@ -161,13 +160,14 @@ describe('PostHTML Render', () => {
           {
             content: [
               {
-                content: ['Test', {}]
-              }
-            ]
-          }
-        ]
+                content: ['Test', {}],
+              },
+            ],
+          },
+        ],
       };
-      const expected = '<div><div><div>Test<div></div></div></div></div>';
+      const expected =
+        '<view><view><view>Test<view></view></view></view></view>';
 
       expect(render(fixture)).to.eql(expected);
     });
@@ -178,23 +178,22 @@ describe('PostHTML Render', () => {
       expect(render()).to.eql('');
     });
 
-    it('HTML', () => {
-      expect(html).to.eql(render(tree));
-    });
+    // it('HTML', () => {
+    //   expect(html).to.eql(render(tree));
+    // });
 
     it('Immutable', () => {
-      const t = [{
-        tag: 'div',
-        content: [
-          {
-            tag: false,
-            content: [
-              {tag: 'div'},
-              {tag: 'span', content: ['Text']}
-            ]
-          }
-        ]
-      }];
+      const t = [
+        {
+          tag: 'view',
+          content: [
+            {
+              tag: false,
+              content: [{ tag: 'view' }, { tag: 'span', content: ['Text'] }],
+            },
+          ],
+        },
+      ];
 
       const t1 = JSON.stringify(t);
 
@@ -210,42 +209,66 @@ describe('PostHTML Render', () => {
     describe('singleTag', () => {
       it('Defaults', () => {
         const SINGLE_TAGS = [
-          'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'
+          'wxs',
+          'input',
+          'textarea',
+          'image',
+          'audio',
+          'video',
+          'icon',
+          'progress',
+          'rich-text',
+          'checkbox',
+          'input',
+          'radio',
+          'slider',
+          'switch',
+          'live-player',
+          'live-pusher',
+          'voip-room',
+          'canvas',
+          'ad',
+          'ad-custom',
+          'official-account',
+          'open-data',
+          'web-view',
         ];
 
-        expect(render(
-          SINGLE_TAGS.map(tag => {
-            return {tag};
-          }
-          ))).to.eql(
-          SINGLE_TAGS.map(tag => {
+        expect(
+          render(
+            SINGLE_TAGS.map((tag) => {
+              return { tag };
+            })
+          )
+        ).to.eql(
+          SINGLE_TAGS.map((tag) => {
             return '<' + tag + '>';
-          }
-          ).join(''));
+          }).join('')
+        );
       });
 
       it('Custom {String}', () => {
-        const options = {singleTags: ['rect']};
+        const options = { singleTags: ['rect'] };
 
-        const fixture = {tag: 'rect'};
+        const fixture = { tag: 'rect' };
         const expected = '<rect>';
 
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('Custom {RegExp}', () => {
-        const options = {singleTags: [/^%.*%$/]};
+        const options = { singleTags: [/^%.*%$/] };
 
-        const fixture = {tag: '%=title%'};
+        const fixture = { tag: '%=title%' };
         const expected = '<%=title%>';
 
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('Attrs', () => {
-        const options = {singleTags: ['rect']};
+        const options = { singleTags: ['rect'] };
 
-        const fixture = {tag: 'rect', attrs: {id: 'id'}};
+        const fixture = { tag: 'rect', attrs: { id: 'id' } };
         const expected = '<rect id="id">';
 
         expect(render(fixture, options)).to.eql(expected);
@@ -254,37 +277,37 @@ describe('PostHTML Render', () => {
 
     describe('closingSingleTag', () => {
       it('Tag', () => {
-        const options = {closingSingleTag: 'tag'};
+        const options = { closingSingleTag: 'tag' };
 
-        const fixture = {tag: 'br'};
-        const expected = '<br></br>';
+        const fixture = { tag: 'image' };
+        const expected = '<image></image>';
 
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('Slash', () => {
-        const options = {closingSingleTag: 'slash'};
+        const options = { closingSingleTag: 'slash' };
 
-        const fixture = {tag: 'br'};
-        const expected = '<br />';
+        const fixture = { tag: 'image' };
+        const expected = '<image />';
 
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('Slash with content', () => {
-        const options = {closingSingleTag: 'slash'};
+        const options = { closingSingleTag: 'slash' };
 
-        const fixture = {tag: 'br', content: ['test']};
-        const expected = '<br />test';
+        const fixture = { tag: 'image', content: ['test'] };
+        const expected = '<image />test';
 
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('Default', () => {
-        const options = {closingSingleTag: 'default'};
+        const options = { closingSingleTag: 'default' };
 
-        const fixture = {tag: 'br'};
-        const expected = '<br>';
+        const fixture = { tag: 'image' };
+        const expected = '<image>';
 
         expect(render(fixture, options)).to.eql(expected);
       });
@@ -292,45 +315,45 @@ describe('PostHTML Render', () => {
 
     describe('quoteAllAttributes', () => {
       it('True', () => {
-        const options = {quoteAllAttributes: true};
+        const options = { quoteAllAttributes: true };
 
-        const fixture = {tag: 'a', attrs: {href: '/about/me/'}};
+        const fixture = { tag: 'a', attrs: { href: '/about/me/' } };
         const expected = '<a href="/about/me/"></a>';
 
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('False', () => {
-        const options = {quoteAllAttributes: false};
+        const options = { quoteAllAttributes: false };
 
-        const fixture = {tag: 'a', attrs: {href: '/about/me/'}};
+        const fixture = { tag: 'a', attrs: { href: '/about/me/' } };
         const expected = '<a href=/about/me/></a>';
 
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('Required Space', () => {
-        const options = {quoteAllAttributes: false};
+        const options = { quoteAllAttributes: false };
 
-        const fixture = {tag: 'p', attrs: {id: 'asd adsasd'}};
+        const fixture = { tag: 'p', attrs: { id: 'asd adsasd' } };
         const expected = '<p id="asd adsasd"></p>';
 
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('Required Tab', () => {
-        const options = {quoteAllAttributes: false};
+        const options = { quoteAllAttributes: false };
 
-        const fixture = {tag: 'a', attrs: {href: '/about-\t-characters'}};
+        const fixture = { tag: 'a', attrs: { href: '/about-\t-characters' } };
         const expected = '<a href="/about-\t-characters"></a>';
 
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('Required Empty', () => {
-        const options = {quoteAllAttributes: false};
+        const options = { quoteAllAttributes: false };
 
-        const fixture = {tag: 'script', attrs: {async: ''}};
+        const fixture = { tag: 'script', attrs: { async: '' } };
         const expected = '<script async></script>';
 
         expect(render(fixture, options)).to.eql(expected);
@@ -339,13 +362,13 @@ describe('PostHTML Render', () => {
       it('Closing slash', () => {
         const options = {
           closingSingleTag: 'slash',
-          quoteAllAttributes: false
+          quoteAllAttributes: false,
         };
 
         // Note that <area href=foobar/> is incorrect as that is parsed as
         // <area href="foobar/">.
 
-        const fixture = {tag: 'area', attrs: {href: 'foobar'}};
+        const fixture = { tag: 'area', attrs: { href: 'foobar' } };
         const expected = '<area href=foobar />';
 
         expect(render(fixture, options)).to.eql(expected);
@@ -354,19 +377,29 @@ describe('PostHTML Render', () => {
 
     describe('replaceQuote', () => {
       it('replace quote', () => {
-        const options = {replaceQuote: false};
+        const options = { replaceQuote: false };
 
-        const fixture = {tag: 'img', attrs: {src: '<?php echo $foo["bar"] ?>'}};
-        const expected = '<img src="<?php echo $foo["bar"] ?>">';
+        const fixture = {
+          tag: 'image',
+          attrs: { src: '<?php echo $foo["bar"] ?>' },
+        };
+        const expected = '<image src="<?php echo $foo["bar"] ?>">';
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('replace quote ternary operator', () => {
-        const options = {replaceQuote: false};
+        const options = { replaceQuote: false };
 
-        const fixture = {tag: 'img', attrs: {src: '<?php echo isset($foo["bar"]) ? $foo["bar"] : ""; ?>'}};
-        const expected = '<img src="<?php echo isset($foo["bar"]) ? $foo["bar"] : ""; ?>">';
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            src: '<?php echo isset($foo["bar"]) ? $foo["bar"] : ""; ?>',
+          },
+        };
+        const expected =
+          '<image src="<?php echo isset($foo["bar"]) ? $foo["bar"] : ""; ?>">';
+
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
       });
@@ -374,30 +407,203 @@ describe('PostHTML Render', () => {
 
     describe('quoteStyle', () => {
       it('1 - single quote', () => {
-        const options = {replaceQuote: false, quoteStyle: 1};
+        const options = { replaceQuote: false, quoteStyle: 1 };
 
-        const fixture = {tag: 'img', attrs: {src: 'https://example.com/example.png', onload: 'testFunc("test")'}};
-        const expected = '<img src=\'https://example.com/example.png\' onload=\'testFunc("test")\'>';
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            src: 'https://example.com/example.png',
+            onload: 'testFunc("test")',
+          },
+        };
+        const expected =
+          "<image src='https://example.com/example.png' onload='testFunc(\"test\")'>";
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('2 - double quote', () => {
-        const options = {replaceQuote: false, quoteStyle: 2};
+        const options = { replaceQuote: false, quoteStyle: 2 };
 
-        const fixture = {tag: 'img', attrs: {src: 'https://example.com/example.png', onload: 'testFunc("test")'}};
-        const expected = '<img src="https://example.com/example.png" onload="testFunc("test")">';
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            src: 'https://example.com/example.png',
+            onload: 'testFunc("test")',
+          },
+        };
+        const expected =
+          '<image src="https://example.com/example.png" onload="testFunc("test")">';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
       });
 
       it('0 - smart quote', () => {
-        const options = {replaceQuote: false, quoteStyle: 0};
+        const options = { replaceQuote: false, quoteStyle: 0 };
 
-        const fixture = {tag: 'img', attrs: {src: 'https://example.com/example.png', onload: 'testFunc("test")'}};
-        const expected = '<img src="https://example.com/example.png" onload=\'testFunc("test")\'>';
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            src: 'https://example.com/example.png',
+            onload: 'testFunc("test")',
+          },
+        };
+        const expected =
+          '<image src="https://example.com/example.png" onload=\'testFunc("test")\'>';
+
+        fs.writeFileSync('test.html', render(fixture, options));
+        expect(render(fixture, options)).to.eql(expected);
+      });
+    });
+
+    describe('removeSpaceBetweenAttributes', () => {
+      it('remove space between attributes', () => {
+        const options = { removeSpaceBetweenAttributes: true };
+
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            class: 'avatar',
+            src: 'https://example.com/example.png',
+          },
+        };
+        const expected =
+          '<image class="avatar"src="https://example.com/example.png">';
+
+        fs.writeFileSync('test.html', render(fixture, options));
+        expect(render(fixture, options)).to.eql(expected);
+      });
+
+      it('remove space between attributes with true value at middle', () => {
+        const options = { removeSpaceBetweenAttributes: true };
+
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            class: 'avatar',
+            'lazy-load': '',
+            src: 'https://example.com/example.png',
+          },
+        };
+        const expected =
+          '<image class="avatar" lazy-load src="https://example.com/example.png">';
+
+        fs.writeFileSync('test.html', render(fixture, options));
+        expect(render(fixture, options)).to.eql(expected);
+      });
+
+      it('remove space between attributes with true value at middle', () => {
+        const options = { removeSpaceBetweenAttributes: true };
+
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            class: 'avatar',
+            'lazy-load': '',
+            src: 'https://example.com/example.png',
+          },
+        };
+        const expected =
+          '<image class="avatar" lazy-load src="https://example.com/example.png">';
+
+        fs.writeFileSync('test.html', render(fixture, options));
+        expect(render(fixture, options)).to.eql(expected);
+      });
+
+      it('remove space between attributes with true value at start', () => {
+        const options = { removeSpaceBetweenAttributes: true };
+
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            'lazy-load': '',
+            class: 'avatar',
+            src: 'https://example.com/example.png',
+          },
+        };
+        const expected =
+          '<image lazy-load class="avatar"src="https://example.com/example.png">';
+
+        fs.writeFileSync('test.html', render(fixture, options));
+        expect(render(fixture, options)).to.eql(expected);
+      });
+
+      it('remove space between attributes with true value at end', () => {
+        const options = { removeSpaceBetweenAttributes: true };
+
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            class: 'avatar',
+            src: 'https://example.com/example.png',
+            'lazy-load': '',
+          },
+        };
+        const expected =
+          '<image class="avatar"src="https://example.com/example.png" lazy-load>';
+
+        fs.writeFileSync('test.html', render(fixture, options));
+        expect(render(fixture, options)).to.eql(expected);
+      });
+
+      it('remove space between attributes with closingSingleTag slash', () => {
+        const options = {
+          removeSpaceBetweenAttributes: true,
+          closingSingleTag: 'slash',
+        };
+
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            class: 'avatar',
+            src: 'https://example.com/example.png',
+          },
+        };
+        const expected =
+          '<image class="avatar"src="https://example.com/example.png"/>';
+
+        fs.writeFileSync('test.html', render(fixture, options));
+        expect(render(fixture, options)).to.eql(expected);
+      });
+
+      it('remove space between attributes with closingSingleTag slash and true value at end', () => {
+        const options = {
+          removeSpaceBetweenAttributes: true,
+          closingSingleTag: 'slash',
+        };
+
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            class: 'avatar',
+            src: 'https://example.com/example.png',
+            'lazy-load': '',
+          },
+        };
+        const expected =
+          '<image class="avatar"src="https://example.com/example.png" lazy-load/>';
+
+        fs.writeFileSync('test.html', render(fixture, options));
+        expect(render(fixture, options)).to.eql(expected);
+      });
+
+      it('remove space between attributes with quoteAllAttributes false', () => {
+        const options = {
+          removeSpaceBetweenAttributes: true,
+          quoteAllAttributes: false,
+        };
+
+        const fixture = {
+          tag: 'image',
+          attrs: {
+            class: 'avatar',
+            src: 'https://example.com/example.png',
+          },
+        };
+        const expected =
+          '<image class=avatar src=https://example.com/example.png>';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
