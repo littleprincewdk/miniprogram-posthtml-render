@@ -32,14 +32,11 @@ Fork from [posthtml/posthtml-render@1.3.0](https://github.com/posthtml/posthtml-
   'wxs',
   'input',
   'textarea',
-  'image',
   'audio',
-  'video',
   'icon',
   'progress',
   'rich-text',
   'checkbox',
-  'input',
   'radio',
   'slider',
   'switch',
@@ -53,24 +50,25 @@ Fork from [posthtml/posthtml-render@1.3.0](https://github.com/posthtml/posthtml-
   'open-data',
   'web-view',
 ]
+// image, video可以有内容
 ```
 
 2. 添加`removeSpaceBetweenAttributes`选项用于压缩, `quoteAllAttributes`同时为`true`生效。
 ```html
-  <image class="avatar" src="https://example.com/example.png" />
+  <input class="phone" type="number" />
 ```
 ->
 ```html
-<image class="avatar"src="https://example.com/example.png"/>
+<input class="phone"type="number"/>
 ```
 ```html
-<image class="avatar" src="https://example.com/example.png" lazy-load />
+<input class="phone" type="number" disabled />
 ```
 ->
 ```html
-<image class="avatar"src="https://example.com/example.png" lazy-load/>
+<input class="phone"type="number" disabled/>
 ```
-3. 将属性值为空字符串的属性只保留`key`, 以支持`<image lazy-load />`写法。`posthtml-parser`会将`autoplay`解释为`{ "lazy-load": "" }`
+3. 将属性值为空字符串的属性只保留`key`, 以支持`<input disabled />`写法。`posthtml-parser`会将`disabled`解释为`{ "disabled": "" }`
 4. 指定`closingSingleTag`且内容为空的标签视为单标签：`<view></view>` => `<view />`
 
 ## Usage

@@ -212,14 +212,11 @@ describe('PostHTML Render', () => {
           'wxs',
           'input',
           'textarea',
-          'image',
           'audio',
-          'video',
           'icon',
           'progress',
           'rich-text',
           'checkbox',
-          'input',
           'radio',
           'slider',
           'switch',
@@ -279,8 +276,8 @@ describe('PostHTML Render', () => {
       it('Tag', () => {
         const options = { closingSingleTag: 'tag' };
 
-        const fixture = { tag: 'image' };
-        const expected = '<image></image>';
+        const fixture = { tag: 'input' };
+        const expected = '<input></input>';
 
         expect(render(fixture, options)).to.eql(expected);
       });
@@ -288,8 +285,8 @@ describe('PostHTML Render', () => {
       it('Slash', () => {
         const options = { closingSingleTag: 'slash' };
 
-        const fixture = { tag: 'image' };
-        const expected = '<image />';
+        const fixture = { tag: 'input' };
+        const expected = '<input />';
 
         expect(render(fixture, options)).to.eql(expected);
       });
@@ -297,8 +294,8 @@ describe('PostHTML Render', () => {
       it('Slash with content', () => {
         const options = { closingSingleTag: 'slash' };
 
-        const fixture = { tag: 'image', content: ['test'] };
-        const expected = '<image />test';
+        const fixture = { tag: 'input', content: ['test'] };
+        const expected = '<input />test';
 
         expect(render(fixture, options)).to.eql(expected);
       });
@@ -306,8 +303,8 @@ describe('PostHTML Render', () => {
       it('Default', () => {
         const options = { closingSingleTag: 'default' };
 
-        const fixture = { tag: 'image' };
-        const expected = '<image>';
+        const fixture = { tag: 'input' };
+        const expected = '<input>';
 
         expect(render(fixture, options)).to.eql(expected);
       });
@@ -380,10 +377,10 @@ describe('PostHTML Render', () => {
         const options = { replaceQuote: false };
 
         const fixture = {
-          tag: 'image',
-          attrs: { src: '<?php echo $foo["bar"] ?>' },
+          tag: 'input',
+          attrs: { type: '<?php echo $foo["bar"] ?>' },
         };
-        const expected = '<image src="<?php echo $foo["bar"] ?>">';
+        const expected = '<input type="<?php echo $foo["bar"] ?>">';
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
       });
@@ -392,13 +389,13 @@ describe('PostHTML Render', () => {
         const options = { replaceQuote: false };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            src: '<?php echo isset($foo["bar"]) ? $foo["bar"] : ""; ?>',
+            type: '<?php echo isset($foo["bar"]) ? $foo["bar"] : ""; ?>',
           },
         };
         const expected =
-          '<image src="<?php echo isset($foo["bar"]) ? $foo["bar"] : ""; ?>">';
+          '<input type="<?php echo isset($foo["bar"]) ? $foo["bar"] : ""; ?>">';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -410,14 +407,13 @@ describe('PostHTML Render', () => {
         const options = { replaceQuote: false, quoteStyle: 1 };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            src: 'https://example.com/example.png',
-            onload: 'testFunc("test")',
+            type: 'number',
+            bindinput: 'testFunc("test")',
           },
         };
-        const expected =
-          "<image src='https://example.com/example.png' onload='testFunc(\"test\")'>";
+        const expected = "<input type='number' bindinput='testFunc(\"test\")'>";
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -427,14 +423,13 @@ describe('PostHTML Render', () => {
         const options = { replaceQuote: false, quoteStyle: 2 };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            src: 'https://example.com/example.png',
-            onload: 'testFunc("test")',
+            type: 'number',
+            bindinput: 'testFunc("test")',
           },
         };
-        const expected =
-          '<image src="https://example.com/example.png" onload="testFunc("test")">';
+        const expected = '<input type="number" bindinput="testFunc("test")">';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -444,14 +439,13 @@ describe('PostHTML Render', () => {
         const options = { replaceQuote: false, quoteStyle: 0 };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            src: 'https://example.com/example.png',
-            onload: 'testFunc("test")',
+            type: 'number',
+            bindinput: 'testFunc("test")',
           },
         };
-        const expected =
-          '<image src="https://example.com/example.png" onload=\'testFunc("test")\'>';
+        const expected = '<input type="number" bindinput=\'testFunc("test")\'>';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -463,14 +457,13 @@ describe('PostHTML Render', () => {
         const options = { removeSpaceBetweenAttributes: true };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            class: 'avatar',
-            src: 'https://example.com/example.png',
+            class: 'phone',
+            type: 'number',
           },
         };
-        const expected =
-          '<image class="avatar"src="https://example.com/example.png">';
+        const expected = '<input class="phone"type="number">';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -480,15 +473,14 @@ describe('PostHTML Render', () => {
         const options = { removeSpaceBetweenAttributes: true };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            class: 'avatar',
-            'lazy-load': '',
-            src: 'https://example.com/example.png',
+            class: 'phone',
+            disabled: '',
+            type: 'number',
           },
         };
-        const expected =
-          '<image class="avatar" lazy-load src="https://example.com/example.png">';
+        const expected = '<input class="phone" disabled type="number">';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -498,15 +490,14 @@ describe('PostHTML Render', () => {
         const options = { removeSpaceBetweenAttributes: true };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            class: 'avatar',
-            'lazy-load': '',
-            src: 'https://example.com/example.png',
+            class: 'phone',
+            disabled: '',
+            type: 'number',
           },
         };
-        const expected =
-          '<image class="avatar" lazy-load src="https://example.com/example.png">';
+        const expected = '<input class="phone" disabled type="number">';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -516,15 +507,14 @@ describe('PostHTML Render', () => {
         const options = { removeSpaceBetweenAttributes: true };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            'lazy-load': '',
-            class: 'avatar',
-            src: 'https://example.com/example.png',
+            disabled: '',
+            class: 'phone',
+            type: 'number',
           },
         };
-        const expected =
-          '<image lazy-load class="avatar"src="https://example.com/example.png">';
+        const expected = '<input disabled class="phone"type="number">';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -534,15 +524,14 @@ describe('PostHTML Render', () => {
         const options = { removeSpaceBetweenAttributes: true };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            class: 'avatar',
-            src: 'https://example.com/example.png',
-            'lazy-load': '',
+            class: 'phone',
+            type: 'number',
+            disabled: '',
           },
         };
-        const expected =
-          '<image class="avatar"src="https://example.com/example.png" lazy-load>';
+        const expected = '<input class="phone"type="number" disabled>';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -555,14 +544,13 @@ describe('PostHTML Render', () => {
         };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            class: 'avatar',
-            src: 'https://example.com/example.png',
+            class: 'phone',
+            type: 'number',
           },
         };
-        const expected =
-          '<image class="avatar"src="https://example.com/example.png"/>';
+        const expected = '<input class="phone"type="number"/>';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -575,15 +563,14 @@ describe('PostHTML Render', () => {
         };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            class: 'avatar',
-            src: 'https://example.com/example.png',
-            'lazy-load': '',
+            class: 'phone',
+            type: 'number',
+            disabled: '',
           },
         };
-        const expected =
-          '<image class="avatar"src="https://example.com/example.png" lazy-load/>';
+        const expected = '<input class="phone"type="number" disabled/>';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
@@ -596,14 +583,13 @@ describe('PostHTML Render', () => {
         };
 
         const fixture = {
-          tag: 'image',
+          tag: 'input',
           attrs: {
-            class: 'avatar',
-            src: 'https://example.com/example.png',
+            class: 'phone',
+            type: 'number',
           },
         };
-        const expected =
-          '<image class=avatar src=https://example.com/example.png>';
+        const expected = '<input class=phone type=number>';
 
         fs.writeFileSync('test.html', render(fixture, options));
         expect(render(fixture, options)).to.eql(expected);
