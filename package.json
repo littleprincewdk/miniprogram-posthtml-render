@@ -1,6 +1,6 @@
 {
   "name": "miniprogram-posthtml-render",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Renders PostHTML Tree to HTML/XML",
   "license": "MIT",
   "repository": "littleprincewdk/miniprogram-posthtml-render",
